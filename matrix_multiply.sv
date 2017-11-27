@@ -65,7 +65,7 @@ module matrix_multiply #(
     end
   end
   
-  assign busy <= state != IDLE;
+  assign busy = state != IDLE;
   
   always_ff @(posedge clk) begin
     if (reset) begin
