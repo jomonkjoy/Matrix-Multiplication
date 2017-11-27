@@ -65,4 +65,63 @@ module matrix_multiply #(
     end
   end
   
+  assign busy <= state != IDLE;
+  
+  always_ff @(posedge clk) begin
+    if (reset) begin
+      state <= IDLE;
+    end else begin
+      case (state)
+        IDLE : begin
+          if (start) begin
+            state <= ACTIVE;
+          end
+        end
+        ACTIVE : begin
+          if (row_count_max && col_count_max) begin
+            state <= DONE;
+          end
+        end
+        DONE : begin
+          if (row_count_r[2] >= mat_a_size[0]) begin
+            state <= IDLE;
+          end
+        end
+        default : state <= IDLE;
+      endcase
+    end
+  end
+  
+  always_ff @(posedge clk) begin
+    if (state == ACTIVE | state == DONE) begin
+      load <= row_count_r[2] >= mat_a_size[0];
+    end else begin
+      load <= 1'b1;
+    end
+  end
+  
+  always_ff @(posedge clk) begin
+    if (state == ACTIVE | state == DONE) begin
+      mat_c_write <= row_count_r[2] >= mat_a_size[0];
+    end else begin
+      mat_c_write <= 1'b0;
+    end
+  end
+  
+  assign mat_a_address  = {'h0,col_count};
+  assign mat_b_address  = {'h0,row_count};
+  assign mat_c_address  = {'h0,col_count_r[3]};
+  
+  genvar i;
+  generate for (i=0; i<SIZE_COUNT; i++) begin : gen
+    multiply_acc #(DATA_WIDTH) mac_unit (
+      .clk   (clk),
+      .reset (reset),
+      .load  (load),
+      .a     (mat_a_read_data[row_count_r[0]]),
+      .b     (mat_b_read_data[i]),
+      .acc   (mat_c_write_data[i]),
+    );
+  end endgenerate
+  
 endmodule
