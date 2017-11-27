@@ -11,7 +11,6 @@ module multiply_acc #(
   output logic [2*DATA_WIDTH-1:0] acc
 );
   
-  localparam DATA_LSB = $clog2(DATA_WIDTH/8);
   localparam ZERO = {2*DATA_WIDTH{1'b0}};
   
   logic signed [1*DATA_WIDTH-1:0] a_reg;
@@ -29,6 +28,6 @@ module multiply_acc #(
     acc_reg <= acc_int + mul_reg;
   end
   
-  assign acc = acc_reg[DATA_WIDTH+DATA_LSB-1:DATA_LSB];
+  assign acc = acc_reg;
   
 endmodule
