@@ -84,7 +84,7 @@ module matrix_multiply #(
           end
         end
         DONE : begin
-          if (row_count_r[2] >= mat_a_size[0]) begin
+          if (row_count_r[3] >= mat_a_size[0]) begin
             state <= IDLE;
           end
         end
@@ -95,7 +95,7 @@ module matrix_multiply #(
   
   always_ff @(posedge clk) begin
     if (state == ACTIVE | state == DONE) begin
-      load <= row_count_max;
+      load <= row_count_r[0] >= mat_a_size[0];
     end else begin
       load <= 1'b1;
     end
