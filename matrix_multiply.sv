@@ -20,6 +20,7 @@ module matrix_multiply #(
 );
   
   logic load;
+  logic [2:0] load_r;
   logic row_count_max;
   logic col_count_max;
   logic [SIZE_WIDTH-1:0] row_count;
@@ -94,10 +95,14 @@ module matrix_multiply #(
   
   always_ff @(posedge clk) begin
     if (state == ACTIVE | state == DONE) begin
-      load <= row_count_r[2] >= mat_a_size[0];
+      load <= row_count_max;
     end else begin
       load <= 1'b1;
     end
+  end
+  
+  always_ff @(posedge clk) begin
+    load_r <= {load_r[1:0],load};
   end
   
   always_ff @(posedge clk) begin
@@ -117,7 +122,7 @@ module matrix_multiply #(
     multiply_acc #(DATA_WIDTH) mac_unit (
       .clk   (clk),
       .reset (reset),
-      .load  (load),
+      .load  (load_r[2]),
       .a     (mat_a_read_data[row_count_r[0]]),
       .b     (mat_b_read_data[i]),
       .acc   (mat_c_write_data[i]),
