@@ -19,19 +19,19 @@ module complex_multiply_acc #(
   
   complex_type a_reg[5];
   complex_type b_reg[5];
-  logic signed [I_DATA_WIDTH-1:0] comon_factor_add;
-  logic signed [I_DATA_WIDTH-1:0] comon_factor_mul;
-  logic signed [I_DATA_WIDTH-1:0] comon_factor_reg;
-  logic signed [I_DATA_WIDTH-1:0] prod_r_add;
-  logic signed [I_DATA_WIDTH-1:0] prod_r_mul;
-  logic signed [I_DATA_WIDTH-1:0] prod_r_cfr;
-  logic signed [O_DATA_WIDTH-1:0] prod_r_reg;
-  logic signed [O_DATA_WIDTH-1:0] prod_r_int;
-  logic signed [I_DATA_WIDTH-1:0] prod_i_add;
-  logic signed [I_DATA_WIDTH-1:0] prod_i_mul;
-  logic signed [I_DATA_WIDTH-1:0] prod_i_cfr;
-  logic signed [O_DATA_WIDTH-1:0] prod_i_reg;
-  logic signed [O_DATA_WIDTH-1:0] prod_i_int;
+  logic signed [I_DATA_WIDTH-1:0]   comon_factor_add;
+  logic signed [I_DATA_WIDTH-1:0]   comon_factor_mul;
+  logic signed [I_DATA_WIDTH-1:0]   comon_factor_reg;
+  logic signed [I_DATA_WIDTH-1:0]   prod_r_add;
+  logic signed [I_DATA_WIDTH-1:0]   prod_r_mul;
+  logic signed [I_DATA_WIDTH-1:0]   prod_r_cfr;
+  logic signed [O_DATA_WIDTH/2-1:0] prod_r_reg;
+  logic signed [O_DATA_WIDTH/2-1:0] prod_r_int;
+  logic signed [I_DATA_WIDTH-1:0]   prod_i_add;
+  logic signed [I_DATA_WIDTH-1:0]   prod_i_mul;
+  logic signed [I_DATA_WIDTH-1:0]   prod_i_cfr;
+  logic signed [O_DATA_WIDTH/2-1:0] prod_i_reg;
+  logic signed [O_DATA_WIDTH/2-1:0] prod_i_int;
   
   always_ff @(posedge clk) begin
     a_reg[0] <= a;
@@ -73,6 +73,6 @@ module complex_multiply_acc #(
     prod_i_reg <= prod_i_mul + prod_i_cfr + prod_i_int;
   end
   
-  assign p = {prod_r_reg,prod_i_reg};
+  assign acc = {prod_r_reg,prod_i_reg};
   
 endmodule
