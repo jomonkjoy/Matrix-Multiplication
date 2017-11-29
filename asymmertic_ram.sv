@@ -19,7 +19,10 @@ module asymmertic_wr_ram #(
   logic [DATA_RATIO][DATA_WIDTH/8-1:0] int_if_write_strb;
   
   assign int_if_write_data = {DATA_RATIO{mem_if_write_data}};
-  assign int_if_write_strb = mem_if_write_strb << mem_if_address[ADDR_MSB-1:ADDR_LSB];
+  genvar i;
+  generate for (i=0; i<DATA_RATIO; i++) begin
+    assign int_if_write_strb[i] = (i == mem_if_address[ADDR_MSB-1:ADDR_LSB]) ? mem_if_write_strb : {DATA_WIDTH/8{1'b0}};
+  end endgenerate
   
   byte_write_spram #(
     .ADDR_DEPTH(ADDR_DEPTH),
